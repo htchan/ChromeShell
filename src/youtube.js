@@ -30,24 +30,25 @@ let _skipAds = () => {
     close_ads_buttons.map( button => button?.click() );
 }
 let _changeView = (mode, trial = 0) => {
-    if (mode?.toUpperCase() === 'FULL SCREEN') {
-        full_screen_button = document.getElementsByClassName('ytp-fullscreen-button ytp-button')[0]
-        if (!full_screen_button) {
-            if (trial < 10) { setTimeout(() => _changeView(mode, trial + 1), 1000); }
-            return
-        }
+    let full_screen_button = document.getElementsByClassName('ytp-fullscreen-button ytp-button')[0];
+
+    let get_into_full_mode = ((mode?.toUpperCase() === 'FULL') &&
+        (!full_screen_button.getAttribute('title').toUpperCase().includes('EXIT')));
+    let exit_full_mode = ((mode?.toUpperCase() !== 'FULL') &&
+        (full_screen_button.getAttribute('title').toUpperCase().includes('EXIT')));
+
+    if (get_into_full_mode || exit_full_mode) {
         full_screen_button.click();
-        return;
     }
 
-    view_button = document.getElementsByClassName('ytp-size-button ytp-button')[0]
-    if (!view_button) {
-        if (trial < 10) { setTimeout(() => _changeView(mode, trial + 1), 1000); }
-        return
-    }
+    if (mode?.toUpperCase() === 'FULL') { return; }
+
+    let view_button = document.getElementsByClassName('ytp-size-button ytp-button')[0]
+
     if (view_button.getAttribute('title').toUpperCase().includes(mode?.toUpperCase())) {
         view_button.click()
     }
+    if (trial < 10) { setTimeout(() => _changeView(mode, trial + 1), 1000); }
 }
 
 let _skipAdsAuto = () => {
@@ -57,29 +58,28 @@ let _skipAdsAuto = () => {
     adsNode && skipAdsObserver.observe(adsNode, config);
 }
 
-let config = {
-    autoSkipAds : true,
-    speed : 2,
-    mode : 'THEATER',
-};
+chrome.storage.sync.get('video_setting', ({video_setting}) => {
+    if (!video_setting.enable) { return; }
 
-let video = {
-    speedUp : _speedUp,
-    skipAds : _skipAds,
-    changeMode : _changeView,
-}
+    let video = {
+        speedUp : _speedUp,
+        skipAds : _skipAds,
+        changeMode : _changeView,
+    }
 
-console.log("running extension")
-console.log("attempt to skip ads")
-video.skipAds();
-console.log("skip ads observer")
-config.autoSkipAds && _skipAdsAuto();
-console.log("change mode", config.mode)
-config.mode && video.changeMode(config.mode);
+    console.log("running extension")
+    console.log("attempt to skip ads")
+    video.skipAds();
+    console.log("skip ads observer")
+    _skipAdsAuto();
 
-let videoType = Array.from(document.getElementsByTagName("meta"))
-.filter( item => item.getAttribute("itemprop") == "genre")[0].getAttribute("content")
-if (videoType != "Music") {
-    console.log("change speed", config.speed)
-    video.speedUp(config.speed);
-}
+    console.log("change mode", video_setting.mode)
+    video.changeMode(video_setting.mode);
+
+    let videoType = Array.from(document.getElementsByTagName("meta"))
+    .filter( item => item.getAttribute("itemprop") == "genre")[0].getAttribute("content")
+    if (videoType != "Music") {
+        console.log("change speed", video_setting.speed)
+        video.speedUp(video_setting.speed);
+    }
+})
