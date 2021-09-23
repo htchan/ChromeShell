@@ -1,9 +1,12 @@
 {
     "name": "ChromeShell",
     "version": "1.0",
-    "description": "it automate some step when website load eg. skip ads in youtube",
-    "manifest_version": 2,
+    "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
+    "manifest_version": 3,
     "permissions": ["storage", "tabs"],
+    "background": {
+        "service_worker": "src/background.js"
+    },
     "content_scripts": [
         {
             "matches": [ "https://www.youtube.com/watch?v=*" ],
@@ -14,7 +17,8 @@
             "js": ["src/bilibili.js"]
         }
     ],
-    "browser_action": {
-      "default_popup": "ui.html"
+    "action": {
+        "default_popup": "src/index.html",
+        "default_icon": "resource/icon.png"
     }
 }
