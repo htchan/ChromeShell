@@ -3,10 +3,10 @@ let _speedUp = (ratio = '2', trial = 0) => {
     target_speed_option = speed_options.filter( item => item.getAttribute('data-value') == ratio)[0]
     if (target_speed_option) {
         target_speed_option.click();
+    } else if (trial < 10) {
+        setTimeout( () => _speedUp(ratio, trial + 1), 1000);
     } else {
-        console.log(ratio + ' not found');
-        if (trial < 10) { setTimeout(() => _speedUp(ratio, trial + 1), 1000); }
-        else { alert(ratio + ' not found')}
+        alert(ratio + ' not found')
     }
 }
 let _changeView = (mode, trial = 0) => {
@@ -36,19 +36,31 @@ let _changeView = (mode, trial = 0) => {
 }
 
 let _play = (trial = 0) => {
-    console.log('click play')
-    let play_button = document.getElementsByClassName('bilibili-player-video-btn-start');
-    console.log('play button length', play_button.length)
-    if (play_button.length == 0) {
-        if (trial < 10) { setTimeout(() => _play(trial + 1), 1000); }
-        return
-    } else {
-        play_button = play_button[0].children[0];
-    }
-    if (play_button.getAttribute('aria-label') == '播放') {
+    let buttons = document.getElementsByClassName('bilibili-player-iconfont')
+    let play_button = Array.from(buttons)
+        .filter( item => item.getAttribute("aria-label") == "播放")[0]
+    if (play_button) {
         play_button.click();
-        if (trial < 10) { setTimeout(() => _play(10), 1000); }
+    } else if (trial < 10) {
+        setTimeout( () => _play(trial + 1), 1000);
     }
+}
+
+let _pause = (trial = 0) => {
+    let buttons = document.getElementsByClassName('bilibili-player-iconfont')
+    let play_button = Array.from(buttons)
+        .filter( item => item.getAttribute("aria-label") == "暂停")[0]
+    if (play_button) {
+        play_button.click();
+    } else if (trial < 10) {
+        setTimeout( () => _pause(trial + 1), 1000);
+    }
+}
+
+let _getTags = (trial = 0) => {
+    let tags = Array.from(document.getElementsByClassName('tag'))
+        .map(item => item.children[0].children[0].innerText);
+    return tags;
 }
 
 
@@ -58,7 +70,11 @@ chrome.storage.sync.get('video_setting', ({video_setting}) => {
     video = {
         speedUp: _speedUp,
         changeMode : _changeView,
-        play: _play,
+        control: {
+            play: _play,
+            pause: _pause,
+        },
+        tags: _getTags()
     }
 
     let tags = document.getElementsByClassName('tag');
