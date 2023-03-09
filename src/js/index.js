@@ -1,5 +1,5 @@
 let enableButton = document.getElementById('enable');
-let speedDropdown = document.getElementById('speed');
+let speedInput = document.getElementById('speed');
 let modeDropdown = document.getElementById('mode');
 let ignoreDropdown = document.getElementById('ignore');
 var setting = {}
@@ -8,12 +8,8 @@ chrome.storage.sync.get('video_setting', ({video_setting}) => {
     setting = video_setting;
 
     enableButton.checked = video_setting.enable;
-    
-    Array.from(speedDropdown.children).forEach( (speedOption) => {
-        if (speedOption.getAttribute('value') == video_setting.speed) {
-            speedOption.selected = true;
-        }
-    });
+
+    speedInput.value = video_setting.speed
 
     Array.from(modeDropdown.children).forEach( (modeOption) => {
         if (modeOption.getAttribute('value') == video_setting.mode) {
@@ -35,8 +31,8 @@ enableButton.onclick = (event) => {
     });
 }
 
-speedDropdown.onchange = (event) => {
-    setting.speed = speedDropdown.value;
+speedInput.onchange = (event) => {
+    setting.speed = speedInput.value;
     chrome.storage.sync.set({
         video_setting: setting
     });

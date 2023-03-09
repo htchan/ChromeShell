@@ -1,6 +1,6 @@
 {
     "name": "ChromeShell",
-    "version": "1.0",
+    "version": "1.2.2",
     "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
     "manifest_version": 3,
     "permissions": ["storage", "tabs"],

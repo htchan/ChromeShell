@@ -14,7 +14,7 @@ let _speedUp = (ratio = '2', trial = 0) => {
     speed_control_button.click();
 
     speed_options = Array.from(document.getElementsByClassName('ytp-menuitem-label'));
-    target_speed_option = speed_options.filter( (option) => option.innerHTML == ratio )?.[0];
+    target_speed_option = speed_options.filter((option) => option.innerHTML == ratio)?.[0];
     console.log('speed option', target_speed_option)
     if (target_speed_option) {
         target_speed_option.click();
@@ -23,13 +23,23 @@ let _speedUp = (ratio = '2', trial = 0) => {
     }
     setting_button.click()
 }
+let _speedUpV2 = (ratio = 2) => {
+    let player = document.querySelector('.video-stream.html5-main-video');
+    console.log(player.readyState)
+    if (player.readyState < 1) {
+        setTimeout( () => _speedUpV2(ratio), 1000)
+    } else {
+        player.playbackRate = ratio;
+    }
+}
 let _skipAds = () => {
     skip_ads_button = document.getElementsByClassName('ytp-ad-skip-button ytp-button')?.[0]
     skip_ads_button?.click();
     close_ads_buttons = Array.from(document.getElementsByClassName('ytp-ad-overlay-close-button'))
-    close_ads_buttons.map( button => button?.click() );
+    close_ads_buttons.map(button => button?.click());
 }
-let _changeView = (mode, trial = 0) => {
+
+let _changeViewMode = (mode, trial = 0) => {
     let full_screen_button = document.getElementsByClassName('ytp-fullscreen-button ytp-button')[0];
 
     let get_into_full_mode = ((mode?.toUpperCase() === 'FULL') &&
@@ -47,8 +57,9 @@ let _changeView = (mode, trial = 0) => {
 
     if (view_button.getAttribute('title').toUpperCase().includes(mode?.toUpperCase())) {
         view_button.click()
+    } else if (trial < 10) { 
+        setTimeout(() => _changeViewMode(mode, trial + 1), 100);
     }
-    if (trial < 10) { setTimeout(() => _changeView(mode, trial + 1), 1000); }
 }
 
 let _skipAdsAuto = () => {
@@ -58,13 +69,14 @@ let _skipAdsAuto = () => {
     adsNode && skipAdsObserver.observe(adsNode, config);
 }
 
-chrome.storage.sync.get('video_setting', ({video_setting}) => {
+let applySetting = ({ video_setting }) => {
+    console.log(video_setting)
     if (!video_setting.enable) { return; }
 
     let video = {
-        speedUp : _speedUp,
-        skipAds : _skipAds,
-        changeMode : _changeView,
+        speedUp: _speedUpV2,
+        skipAds: _skipAds,
+        changeMode: _changeViewMode,
     }
 
     console.log("running extension")
@@ -73,13 +85,25 @@ chrome.storage.sync.get('video_setting', ({video_setting}) => {
     console.log("skip ads observer")
     _skipAdsAuto();
 
-    console.log("change mode", video_setting.mode)
-    video.changeMode(video_setting.mode);
-
     let videoType = Array.from(document.getElementsByTagName("meta"))
-    .filter( item => item.getAttribute("itemprop") == "genre")[0].getAttribute("content")
+        .filter(item => item.getAttribute("itemprop") == "genre")[0].getAttribute("content")
     if (videoType != "Music") {
+        console.log("change mode", video_setting.mode)
+        video.changeMode(video_setting.mode);
+
         console.log("change speed", video_setting.speed)
         video.speedUp(video_setting.speed);
+    }
+}
+
+chrome.storage.sync.get('video_setting', applySetting)
+
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    console.log(changes)
+    console.log(changes['video_setting'] != null)
+    if (changes['video_setting'] != null) {
+        console.log(changes.video_setting.newValue)
+        applySetting({video_setting: changes.video_setting.newValue})
     }
 })
