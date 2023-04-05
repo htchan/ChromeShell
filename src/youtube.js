@@ -14,7 +14,7 @@ let _speedUp = (ratio = '2', trial = 0) => {
     speed_control_button.click();
 
     speed_options = Array.from(document.getElementsByClassName('ytp-menuitem-label'));
-    target_speed_option = speed_options.filter((option) => option.innerHTML == ratio)?.[0];
+    target_speed_option = speed_options.filter((option) => option.innerHTML == ratio || (ratio == 1 && option.innerHTML.toUpperCase() == "NORMAL"))?.[0];
     console.log('speed option', target_speed_option)
     if (target_speed_option) {
         target_speed_option.click();
@@ -23,13 +23,35 @@ let _speedUp = (ratio = '2', trial = 0) => {
     }
     setting_button.click()
 }
+
+var originalTrackCues = null
 let _speedUpV2 = (ratio = 2) => {
-    let player = document.querySelector('.video-stream.html5-main-video');
-    console.log(player.readyState)
-    if (player.readyState < 1) {
-        setTimeout( () => _speedUpV2(ratio), 1000)
+    let player = document.querySelector('video');
+    console.log(player?.readyState)
+    if (!player || player.readyState < 1) {
+        setTimeout(() => _speedUpV2(ratio), 1000)
     } else {
+        let targetRatioV1 = 2
+        if (ratio < 2) { targetRatioV1 = ratio }
+        _speedUp(targetRatioV1)
         player.playbackRate = ratio;
+
+        // speed up the subtitle
+        let trackList = document.querySelector('video').textTracks;
+        for (let i = 0; i < trackList.length; i++) {
+            let track = trackList[i];
+            track.mode = 'showing'; // set to 'hidden' if already showing so it will update
+            for (let j = 0; j < track.cues.length; j++) {
+                let cue = track.cues[j];
+                if (j == track.cues.length - 1) {
+                    console.log(cue)
+                    console.log(cue.startTime)
+                    console.log(cue.endTime)
+                }
+                cue.startTime /= ratio; // adjust the start time of the caption
+                cue.endTime /= ratio; // adjust the end time of the caption
+            }
+        }
     }
 }
 let _skipAds = () => {
@@ -37,6 +59,7 @@ let _skipAds = () => {
     skip_ads_button?.click();
     close_ads_buttons = Array.from(document.getElementsByClassName('ytp-ad-overlay-close-button'))
     close_ads_buttons.map(button => button?.click());
+    _speedUpV2(global_video_settng.speed)
 }
 
 let _changeViewMode = (mode, trial = 0) => {
@@ -57,7 +80,7 @@ let _changeViewMode = (mode, trial = 0) => {
 
     if (view_button.getAttribute('title').toUpperCase().includes(mode?.toUpperCase())) {
         view_button.click()
-    } else if (trial < 10) { 
+    } else if (trial < 10) {
         setTimeout(() => _changeViewMode(mode, trial + 1), 100);
     }
 }
@@ -69,7 +92,10 @@ let _skipAdsAuto = () => {
     adsNode && skipAdsObserver.observe(adsNode, config);
 }
 
+var global_video_settng = null
+
 let applySetting = ({ video_setting }) => {
+    global_video_settng = video_setting
     console.log(video_setting)
     if (!video_setting.enable) { return; }
 
@@ -104,6 +130,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     console.log(changes['video_setting'] != null)
     if (changes['video_setting'] != null) {
         console.log(changes.video_setting.newValue)
-        applySetting({video_setting: changes.video_setting.newValue})
+        applySetting({ video_setting: changes.video_setting.newValue })
     }
 })
