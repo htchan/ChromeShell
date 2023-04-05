@@ -1,26 +1,29 @@
 {
-    "name": "ChromeShell",
-    "version": "1.2.2",
-    "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
-    "manifest_version": 3,
-    "permissions": ["storage", "tabs"],
-    "background": {
-        "service_worker": "src/background.js"
+  "name": "ChromeShell",
+  "version": "1.2.2",
+  "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
+  "manifest_version": 3,
+  "permissions": ["storage", "tabs"],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.youtube.com/watch?v=*",
+        "https://www.youtube.com/shorts/*"
+      ],
+      "js": ["src/youtube.js"],
+      "run_at": "document_end"
     },
-    "content_scripts": [
-        {
-            "matches": [ "https://www.youtube.com/watch?v=*" ],
-            "js": ["src/youtube.js"],
-            "run_at": "document_end"
-        },
-        {
-            "matches": [ "https://www.bilibili.com/video/*"],
-            "js": ["src/bilibili.js"],
-            "run_at": "document_end"
-        }
-    ],
-    "action": {
-        "default_popup": "src/index.html",
-        "default_icon": "resource/icon.png"
+    {
+      "matches": ["https://www.bilibili.com/video/*"],
+      "js": ["src/bilibili.js"],
+      "run_at": "document_end"
     }
+  ],
+  "action": {
+    "default_popup": "src/index.html",
+    "default_icon": "resource/icon.png"
+  }
 }
