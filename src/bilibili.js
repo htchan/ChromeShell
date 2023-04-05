@@ -1,60 +1,59 @@
 let _speedUp = (ratio = '2', trial = 0) => {
-    speed_options = Array.from(document.getElementsByClassName('bilibili-player-video-btn-speed-menu-list'))
-    target_speed_option = speed_options.filter( item => item.getAttribute('data-value') == ratio)[0]
-    if (target_speed_option) {
-        target_speed_option.click();
-    } else if (trial < 10) {
-        setTimeout( () => _speedUp(ratio, trial + 1), 1000);
+    let player = document.getElementsByTagName("video")[0];
+    if (player.readyState < 1) {
+        if (trial < 10) { setTimeout(() => _speedUp(ratio, trial + 1), 1000); }
     } else {
-        alert(ratio + ' not found')
+        player.playbackRate = ratio;
     }
 }
 let _changeView = (mode, trial = 0) => {
-    full_screen_button = document.getElementsByClassName('bilibili-player-video-btn bilibili-player-video-btn-fullscreen')[0]
-    if (!full_screen_button) {
+    let isDefaultMode = document.getElementsByClassName("bpx-player-control-bottom-center")[0]?.childElementCount === 0;
+    let isTheaterMode = document.getElementsByClassName('bpx-player-ctrl-btn bpx-player-ctrl-web')[0]?.classList.contains('bpx-state-entered');
+    let isWideMode = document.getElementsByClassName('bpx-player-ctrl-btn bpx-player-ctrl-wide')[0]?.classList.contains('bpx-state-entered');
+
+    let player = document.getElementsByTagName("video")[0];
+    if (player.readyState < 1) {
         if (trial < 10) { setTimeout(() => _changeView(mode, trial + 1), 1000); }
-        return
     }
-    if (mode?.toUpperCase() === 'FULL SCREEN') {
-        if (!full_screen_button?.getAttribute('class').includes('closed')) {
-            full_screen_button?.click();
-        }
-        return;
+
+    switch (mode?.toUpperCase()) {
+        case 'FULL SCREEN':
+            let fullScreenModeButton = document.getElementsByClassName('bpx-player-ctrl-btn bpx-player-ctrl-full')[0];
+            if (isDefaultMode || isTheaterMode || isWideMode) {
+                fullScreenModeButton.click();
+            }
+            break;
+        case 'THEATER':
+            let theaterModeButton = document.getElementsByClassName('bpx-player-ctrl-btn bpx-player-ctrl-web')[0]
+            if (!theaterModeButton && trial < 10) {
+                setTimeout(() => _changeView(mode, trial + 1), 1000);
+                return;
+            }
+            if (!isTheaterMode) {
+                theaterModeButton.click();
+            }
+            break;
+        default:
+            console.error(`unknown mode: ${mode}`);
     }
-    if (full_screen_button.getAttribute('class').includes('closed')) {
-        full_screen_button?.click();
-    }
-    view_button = document.getElementsByClassName('bilibili-player-video-btn bilibili-player-video-web-fullscreen')[0]
-    if (!view_button) {
-        if (trial < 10) { setTimeout(() => _changeView(mode, trial + 1), 1000); }
-        return
-    }
-    if ((mode?.toUpperCase() === 'THEATER') && (view_button.getAttribute('class').includes('closed'))) {
-        return
-    }
-    view_button.click()
 }
 
 let _play = (trial = 0) => {
-    let buttons = document.getElementsByClassName('bilibili-player-iconfont')
-    let play_button = Array.from(buttons)
-        .filter( item => item.getAttribute("aria-label") == "播放")[0]
-    if (play_button) {
-        play_button.click();
-    } else if (trial < 10) {
-        setTimeout( () => _play(trial + 1), 1000);
+    let player = document.getElementsByTagName("video")[0];
+    if (player.readyState < 1) {
+        if (trial < 10) { setTimeout(() => _play(trial + 1), 1000); }
     }
+
+    player.play();
 }
 
 let _pause = (trial = 0) => {
-    let buttons = document.getElementsByClassName('bilibili-player-iconfont')
-    let play_button = Array.from(buttons)
-        .filter( item => item.getAttribute("aria-label") == "暂停")[0]
-    if (play_button) {
-        play_button.click();
-    } else if (trial < 10) {
-        setTimeout( () => _pause(trial + 1), 1000);
+    let player = document.getElementsByTagName("video")[0];
+    if (player.readyState < 1) {
+        if (trial < 10) { setTimeout(() => _pause(trial + 1), 1000); }
     }
+
+    player.pause();
 }
 
 let _getTags = (trial = 0) => {
@@ -64,31 +63,49 @@ let _getTags = (trial = 0) => {
 }
 
 
-chrome.storage.sync.get('video_setting', ({video_setting}) => {
+let applySetting = ({video_setting}) => {
     if (!video_setting.enable) { return; }
 
-    video = {
+    let video = {
         speedUp: _speedUp,
         changeMode : _changeView,
         control: {
             play: _play,
             pause: _pause,
         },
-        tags: _getTags()
+        // tags: _getTags()
     }
 
     let tags = document.getElementsByClassName('tag');
-    tags = Array.from(tags).map(tag => tag.innerText);
+    tags = Array.from(tags).map(tag => tag.innerText.trim());
     skip = tags.filter( (tag) => video_setting.ignore.includes(tag));
-    if (skip.length != 0) { return; }
+    if (skip.length != 0) { return video; }
 
     console.log('start auto setup')
     console.log('click play button')
-    video.play();
 
     console.log('change mode', video_setting.mode);
     video.changeMode(video_setting.mode);
     
     console.log('change speed', video_setting.speed)
     video.speedUp(video_setting.speed)
-});
+
+    return video
+}
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    console.log(changes)
+    console.log(changes['video_setting'] != null)
+    if (changes['video_setting'] != null) {
+        console.log(changes.video_setting.newValue)
+        applySetting({ video_setting: changes.video_setting.newValue })
+    }
+})
+
+let player = document.getElementsByTagName("video")[0];
+player.onloadedmetadata = () => {
+    chrome.storage.sync.get('video_setting', (value) => {
+        video = applySetting(value);
+        // video.control.play();
+    });
+};
