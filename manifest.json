@@ -25,5 +25,19 @@
   "action": {
     "default_popup": "src/index.html",
     "default_icon": "resource/icon.png"
+  },
+  "commands": {
+    "faster": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Up"
+      },
+      "description": "Speed up the video"
+    },
+    "slower": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Down"
+      },
+      "description": "Slow down the video"
+    }
   }
 }
