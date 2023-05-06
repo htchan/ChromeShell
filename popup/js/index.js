@@ -25,12 +25,12 @@ function applySetting(video_setting) {
 }
 
 function updateSetting() {
-  chrome.storage.sync.set({
+  chrome.storage.local.set({
     video_setting: setting,
   });
 }
 
-chrome.storage.sync.get("video_setting", ({ video_setting }) => {
+chrome.storage.local.get("video_setting", ({ video_setting }) => {
   applySetting(video_setting);
 });
 
