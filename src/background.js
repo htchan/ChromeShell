@@ -1,22 +1,25 @@
 // default setting
-var setting = {
-  speed: 1,
-  mode: "default",
-  enable: false,
-  ignore: [],
-};
+var setting = null;
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.sync.get("video_setting", (result) => {
+  chrome.storage.local.get("video_setting", (result) => {
     if (!result.video_setting) {
-      chrome.storage.sync.set({
+      setting = {
+        speed: 1,
+        mode: "default",
+        enable: false,
+        ignore: [],
+      };
+      chrome.storage.local.set({
         video_setting: setting,
       });
+    } else {
+      setting = result.video_setting;
     }
   });
 });
 
-chrome.storage.sync.get(
+chrome.storage.local.get(
   "video_setting",
   ({ video_setting }) => (setting = video_setting)
 );
@@ -27,21 +30,28 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 });
 
+const SPEED_STEP = 0.25;
+
 chrome.commands.onCommand.addListener((command) => {
+  if (setting == null) {
+    return;
+  }
   switch (command.toUpperCase()) {
     case "FASTER":
-      setting.speed = (Number(setting.speed) + 0.25).toString();
+      setting.speed = (Number(setting.speed) + SPEED_STEP).toString();
 
-      chrome.storage.sync.set({
+      chrome.storage.local.set({
         video_setting: setting,
       });
       break;
     case "SLOWER":
-      setting.speed = (Number(setting.speed) - 0.25).toString();
+      if (setting.speed > SPEED_STEP) {
+        setting.speed = (Number(setting.speed) - SPEED_STEP).toString();
 
-      chrome.storage.sync.set({
-        video_setting: setting,
-      });
+        chrome.storage.local.set({
+          video_setting: setting,
+        });
+      }
       break;
     default:
   }

@@ -1,6 +1,6 @@
 {
   "name": "ChromeShell",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
   "manifest_version": 3,
   "permissions": ["storage", "tabs"],
@@ -9,21 +9,27 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://www.youtube.com/watch?v=*",
-        "https://www.youtube.com/shorts/*"
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["src/helper.js", "src/const.js", "src/speed.js"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://www.youtube.com/watch*"],
+      "js": [
+        "src/youtube/ads.js",
+        "src/youtube/view.js",
+        "src/youtube/speed.js"
       ],
-      "js": ["src/youtube.js"],
       "run_at": "document_end"
     },
     {
       "matches": ["https://www.bilibili.com/video/*"],
-      "js": ["src/bilibili.js"],
+      "js": ["src/bilibili/view.js"],
       "run_at": "document_end"
     }
   ],
   "action": {
-    "default_popup": "src/index.html",
+    "default_popup": "popup/index.html",
     "default_icon": "resource/icon.png"
   },
   "commands": {
