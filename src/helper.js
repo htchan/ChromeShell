@@ -22,3 +22,19 @@ function storage() {
 
   return null;
 }
+
+function runtime() {
+  if (detectBrowser() == "firefox") {
+    return browser.runtime;
+  } else if (detectBrowser() == "chrome") {
+    return chrome.runtime;
+  }
+
+  return null;
+}
+
+function loadMeta() {
+  return Array.from(document.querySelectorAll("meta"))
+    .map((item) => item.content)
+    .join(",");
+}
