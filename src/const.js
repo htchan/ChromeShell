@@ -7,6 +7,8 @@ const EXTENSION_NAME = "Video Helper";
 const HEADER_GENERIC = `[${EXTENSION_NAME} - Generic]`;
 const HEADER_YOUTUBE = `[${EXTENSION_NAME} - YouTube]`;
 
+const HEADER_MOBILE = `[mobile]`
+
 const HEADER_SPEED = "[speed]";
 const HEADER_VIEW = "[view]";
 const HEADER_ADS = "[ads]";

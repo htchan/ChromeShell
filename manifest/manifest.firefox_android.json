@@ -1,6 +1,6 @@
 {
   "name": "Player Helper",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
   "manifest_version": 2,
   "permissions": ["storage", "tabs"],
@@ -27,6 +27,11 @@
         "src/youtube/view.js",
         "src/youtube/speed.js"
       ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://m.youtube.com/*"],
+      "js": ["src/mobile_youtube/view.js"],
       "run_at": "document_end"
     },
     {
