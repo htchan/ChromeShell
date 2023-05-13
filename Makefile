@@ -12,5 +12,5 @@ firefox_version:
 firefox_android_version:
 	cp manifest/manifest.firefox_android.json manifest.json
 
-build_web-ext:
+build-web-ext:
 	web-ext build
