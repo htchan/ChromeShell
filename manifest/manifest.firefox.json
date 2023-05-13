@@ -1,0 +1,35 @@
+{
+  "name": "Player Helper",
+  "version": "2.0.0",
+  "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
+  "manifest_version": 2,
+  "permissions": ["storage", "tabs"],
+  "icons": {
+    "32": "resource/icon.png"
+  },
+  "browser_action": {
+    "default_popup": "popup/index.html",
+    "default_title": "Video Player Helper"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["src/helper.js", "src/const.js", "src/speed.js"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://www.youtube.com/watch*"],
+      "js": [
+        "src/youtube/ads.js",
+        "src/youtube/view.js",
+        "src/youtube/speed.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://www.bilibili.com/video/*"],
+      "js": ["src/bilibili/view.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
