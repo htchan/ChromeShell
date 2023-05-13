@@ -5,7 +5,20 @@ let ignoreDropdown = document.getElementById("ignore");
 var setting = {};
 
 function applySetting(video_setting) {
-  setting = video_setting;
+  if (video_setting == null) {
+    setting = {
+      speed: 1,
+      mode: "default",
+      enable: false,
+      ignore: [],
+    };
+
+    storage().local.set({
+      video_setting: setting,
+    });
+  } else {
+    setting = video_setting;
+  }
 
   enableButton.checked = setting.enable;
 
