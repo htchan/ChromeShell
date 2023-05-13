@@ -28,23 +28,33 @@ function ChangeSpeed() {
 
 storage().local.get("video_setting", ({ video_setting }) => {
   if (video_setting.enable) {
-    if (video_setting.ignore.some( (ignoreItem) => loadMeta().includes(ignoreItem) )) {
+    if (
+      video_setting.ignore.some((ignoreItem) => loadMeta().includes(ignoreItem))
+    ) {
       return;
     }
-    
+
     console.log(
       `${HEADER_GENERIC} ${HEADER_SPEED} load video_setting for change speed ${JSON.stringify(
         video_setting
       )}`
     );
-    setTimeout(() => ChangeSpeed(), 500);
+
+    setTimeout(() => {
+      let videoBox = document.querySelector("#movie_player");
+      addEventListener(videoBox, "click", ChangeSpeed, {
+        once: true,
+      });
+    }, 500);
   }
 });
 
 storage().onChanged.addListener((changes, area) => {
   let video_setting = changes["video_setting"]["newValue"];
   if (video_setting.enable) {
-    if (video_setting.ignore.some( (ignoreItem) => loadMeta().includes(ignoreItem) )) {
+    if (
+      video_setting.ignore.some((ignoreItem) => loadMeta().includes(ignoreItem))
+    ) {
       return;
     }
 

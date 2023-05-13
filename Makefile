@@ -1,6 +1,6 @@
 .PHONY: run-web-ext build-web-ext chrome_version firefox_version firefox_android_version
 
-run_web-ext:
+run-web-ext:
 	web-ext run -t firefox-android --adb-device R5CT12GQV4K --firefox-apk org.mozilla.fenix
 
 chrome_version:

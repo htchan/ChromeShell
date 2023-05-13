@@ -34,11 +34,9 @@ storage().local.get("video_setting", ({ video_setting }) => {
     );
     setTimeout(() => {
       let videoBox = document.querySelector("#movie_player");
-      videoBox.addEventListener(
-        "click",
-        view_AddVideoBoxClickLister,
-        {once: true}
-      );
+      addEventListener(videoBox, "click", view_AddVideoBoxClickLister, {
+        once: true,
+      });
     }, 500);
   }
 });

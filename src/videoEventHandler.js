@@ -1,6 +1,6 @@
 var listeners = {};
 
-function addEventListener(element, event, callback) {
+function addEventListener(element, event, callback, options={}) {
   let elementListeners = listeners[element] || {};
   elementListeners[event] == null
     ? (elementListeners[event] = [callback])
@@ -10,7 +10,7 @@ function addEventListener(element, event, callback) {
     elementListeners[event].forEach((item) => {
       item(element);
     });
-  });
+  }, options);
 
   listeners[element] = elementListeners;
 }
