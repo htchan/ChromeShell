@@ -14,7 +14,7 @@
   "content_scripts": [
     {
       "matches": ["https://*/*", "http://*/*"],
-      "js": ["src/helper.js", "src/const.js", "src/speed.js"],
+      "js": ["src/helper.js", "src/const.js", "src/videoEventHandler.js", "src/speed.js"],
       "run_at": "document_end"
     },
     {

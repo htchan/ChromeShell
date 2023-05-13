@@ -1,8 +1,43 @@
+async function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+function detectBrowser() {
+  let userAgent = navigator.userAgent;
+
+  if (userAgent.match(/chrome|chromium|crios/i)) {
+    return "chrome";
+  } else if (userAgent.match(/firefox|fxios/i)) {
+    return "firefox";
+  }
+  return "not_supported";
+}
+
+function storage() {
+  if (detectBrowser() == "firefox") {
+    return browser.storage;
+  } else if (detectBrowser() == "chrome") {
+    return chrome.storage;
+  }
+
+  return null;
+}
+
+function runtime() {
+  if (detectBrowser() == "firefox") {
+    return browser.runtime;
+  } else if (detectBrowser() == "chrome") {
+    return chrome.runtime;
+  }
+
+  return null;
+}
+
 // default setting
 var setting = null;
 
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.get("video_setting", (result) => {
+runtime().onInstalled.addListener(() => {
+  storage().local.get("video_setting", (result) => {
     if (!result.video_setting) {
       setting = {
         speed: 1,
@@ -10,7 +45,7 @@ chrome.runtime.onInstalled.addListener(() => {
         enable: false,
         ignore: [],
       };
-      chrome.storage.local.set({
+      storage().local.set({
         video_setting: setting,
       });
     } else {
@@ -19,12 +54,12 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-chrome.storage.local.get(
+storage().local.get(
   "video_setting",
   ({ video_setting }) => (setting = video_setting)
 );
 
-chrome.storage.onChanged.addListener((changes, namespace) => {
+storage().onChanged.addListener((changes, namespace) => {
   if (changes?.video_setting != null) {
     setting = changes.video_setting.newValue;
   }
@@ -40,7 +75,7 @@ chrome.commands.onCommand.addListener((command) => {
     case "FASTER":
       setting.speed = (Number(setting.speed) + SPEED_STEP).toString();
 
-      chrome.storage.local.set({
+      storage().local.set({
         video_setting: setting,
       });
       break;
@@ -48,7 +83,7 @@ chrome.commands.onCommand.addListener((command) => {
       if (setting.speed > SPEED_STEP) {
         setting.speed = (Number(setting.speed) - SPEED_STEP).toString();
 
-        chrome.storage.local.set({
+        storage().local.set({
           video_setting: setting,
         });
       }

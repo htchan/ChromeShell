@@ -1,7 +1,7 @@
 async function changePlayerSpeed(player, trial = 0) {
   for (let i = 0; i < SPEED_MAX_RETRY; i++) {
     if (!player || player.readyState < 1) {
-      await sleep(1000);
+      await sleep(100);
     } else {
       let {
         video_setting: { speed },
@@ -21,6 +21,7 @@ async function changePlayerSpeed(player, trial = 0) {
 function ChangeSpeed() {
   let videos = Array.from(document.querySelectorAll("video"));
   videos.forEach((video) => {
+    addEventListener(video, "playing", () => changePlayerSpeed(video));
     changePlayerSpeed(video);
   });
 }

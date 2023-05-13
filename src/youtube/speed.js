@@ -76,6 +76,10 @@ async function youtubeChangeSpeed(speed) {
 
 storage().local.get("video_setting", ({ video_setting }) => {
   if (video_setting.enable) {
+    if (video_setting.ignore.some( (ignoreItem) => loadMeta().includes(ignoreItem) )) {
+      return;
+    }
+    
     console.log(
       `${HEADER_YOUTUBE} ${HEADER_SPEED} [speed] load video_setting for change speed ${JSON.stringify(
         video_setting
