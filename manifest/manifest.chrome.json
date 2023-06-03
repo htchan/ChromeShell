@@ -1,6 +1,6 @@
 {
   "name": "ChromeShell",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
   "manifest_version": 3,
   "permissions": ["storage", "tabs"],
@@ -14,7 +14,8 @@
         "src/helper.js",
         "src/const.js",
         "src/videoEventHandler.js",
-        "src/speed.js"
+        "src/speed.js",
+        "src/in_app_panel.js"
       ],
       "run_at": "document_end"
     },
