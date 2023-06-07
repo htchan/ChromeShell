@@ -40,10 +40,11 @@ runtime().onInstalled.addListener(() => {
   storage().local.get("video_setting", (result) => {
     if (!result.video_setting) {
       setting = {
-        speed: 1,
-        mode: "default",
         enable: false,
-        ignore: [],
+        panel_enabled: true,
+        speed: {enabled: true, value: 1},
+        mode: {enabled: true, value: "default"},
+        ignore: {enabled: true, value: []},
       };
       storage().local.set({
         video_setting: setting,
@@ -73,15 +74,15 @@ chrome.commands.onCommand.addListener((command) => {
   }
   switch (command.toUpperCase()) {
     case "FASTER":
-      setting.speed = (Number(setting.speed) + SPEED_STEP).toString();
+      setting.speed.value = (Number(setting.speed.value) + SPEED_STEP).toString();
 
       storage().local.set({
         video_setting: setting,
       });
       break;
     case "SLOWER":
-      if (setting.speed > SPEED_STEP) {
-        setting.speed = (Number(setting.speed) - SPEED_STEP).toString();
+      if (setting.speed.value > SPEED_STEP) {
+        setting.speed.value = (Number(setting.speed.value) - SPEED_STEP).toString();
 
         storage().local.set({
           video_setting: setting,

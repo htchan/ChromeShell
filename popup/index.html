@@ -6,22 +6,16 @@
   </head>
   <body>
     <table>
+      <!--enable row-->
       <tr>
-        <!--enable row-->
-        <td>
-          <h3>Enable:</h3>
-        </td>
-        <td>
-          <label class="switch">
-            <input id="enable" type="checkbox" checked />
-            <span class="slider round"></span>
-          </label>
+        <td colspan="2">
+          <h3 class="disabled" id="enable">Extension Disable</h3>
         </td>
       </tr>
       <!--speed row-->
       <tr>
         <td>
-          <h3>Speed:</h3>
+          <h3 class="disabled" id="speed-enable">Speed:</h3>
         </td>
         <td>
           <!-- <select id="speed">
@@ -39,7 +33,7 @@
       <!--mode row-->
       <tr>
         <td>
-          <h3>Mode:</h3>
+          <h3 class="disabled" id="mode-enable">Mode:</h3>
         </td>
         <td>
           <select id="mode">
@@ -52,13 +46,19 @@
       <!--ignore row-->
       <tr>
         <td>
-          <h3>Ignore:</h3>
+          <h3 class="disabled" id="ignore-enable">Ignore:</h3>
         </td>
         <td>
           <select id="ignore" multiple>
             <option value="music">Music</option>
             <option value="音乐">音乐</option>
           </select>
+        </td>
+      </tr>
+      <!--panel row-->
+      <tr>
+        <td>
+          <h3 class="disabled" id="panel-enable">Panel Disabled</h3>
         </td>
       </tr>
     </table>

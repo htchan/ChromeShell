@@ -20,7 +20,6 @@ async function getSpeedMenuButton() {
     await sleep(UI_INTERACTION_INTERVAL);
   }
 }
-
 async function getTargetSpeedOption(speed) {
   while (true) {
     let targetSpeedOption = Array.from(
@@ -75,8 +74,9 @@ async function youtubeChangeSpeed(speed) {
 }
 
 storage().local.get("video_setting", ({ video_setting }) => {
-  if (video_setting.enable) {
-    if (video_setting.ignore.some( (ignoreItem) => loadMeta().includes(ignoreItem) )) {
+  if (video_setting.enable && video_setting.speed.enabled) {
+    let shouldIgnore = video_setting.ignore.value.some( (ignoreItem) => loadMeta().includes(ignoreItem) )
+    if (video_setting.ignore.enabled && shouldIgnore) {
       return;
     }
     

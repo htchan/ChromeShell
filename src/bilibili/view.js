@@ -43,7 +43,12 @@ function biliChangeView(mode, trial = 0) {
 }
 
 storage().local.get("video_setting", ({ video_setting }) => {
-  if (video_setting.enable) {
-    biliChangeView(video_setting.mode);
+  if (video_setting.enable && video_setting.mode.enabled) {
+    let shouldIgnore = video_setting.ignore.value.some( (ignoreItem) => loadMeta().includes(ignoreItem) )
+    if (video_setting.ignore.enabled && shouldIgnore) {
+      return;
+    }
+    
+    biliChangeView(video_setting.mode.value);
   }
 });

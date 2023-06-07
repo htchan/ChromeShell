@@ -8,8 +8,8 @@ function view_SetPlayerFullScreenListener() {
       console.log(
         `${HEADER_YOUTUBE} ${HEADER_MOBILE} ${HEADER_VIEW} enter full screen`
       );
-      let mode = document.querySelector(".icon-button.fullscreen-icon");
-      mode.click();
+      let modeButton = document.querySelector(".icon-button.fullscreen-icon");
+      modeButton?.click();
     }
   });
 }
@@ -26,7 +26,12 @@ function view_AddVideoBoxClickLister() {
 }
 
 storage().local.get("video_setting", ({ video_setting }) => {
-  if (video_setting.enable) {
+  if (video_setting.enable && video_setting.mode.enabled) {
+    let shouldIgnore = video_setting.ignore.value.some( (ignoreItem) => loadMeta().includes(ignoreItem) )
+    if (video_setting.ignore.enabled && shouldIgnore) {
+      return;
+    }
+    
     console.log(
       `${HEADER_YOUTUBE} ${HEADER_MOBILE} ${HEADER_VIEW} load video_setting for change view ${JSON.stringify(
         video_setting

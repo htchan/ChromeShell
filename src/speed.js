@@ -4,14 +4,16 @@ async function changePlayerSpeed(player, trial = 0) {
       await sleep(100);
     } else {
       let {
-        video_setting: { speed },
+        video_setting: {
+          speed: { value },
+        },
       } = await storage().local.get("video_setting");
-      player.onloadedmetadata = () => changePlayerSpeed(player, speed);
+      player.onloadedmetadata = () => changePlayerSpeed(player, value);
       for (let i = 0; i < 3; i++) {
-        player.playbackRate = speed;
+        player.playbackRate = value;
         await sleep(500);
       }
-      console.log(`${HEADER_GENERIC} ${HEADER_SPEED} update speed to ${speed}`);
+      console.log(`${HEADER_GENERIC} ${HEADER_SPEED} update speed to ${value}`);
 
       break;
     }
@@ -27,10 +29,11 @@ function ChangeSpeed() {
 }
 
 storage().local.get("video_setting", ({ video_setting }) => {
-  if (video_setting.enable) {
-    if (
-      video_setting.ignore.some((ignoreItem) => loadMeta().includes(ignoreItem))
-    ) {
+  if (video_setting.enable && video_setting.speed.enabled) {
+    let shouldIgnore = video_setting.ignore.value.some((ignoreItem) =>
+      loadMeta().includes(ignoreItem)
+    );
+    if (video_setting.ignore.enabled && shouldIgnore) {
       return;
     }
 
@@ -51,10 +54,11 @@ storage().local.get("video_setting", ({ video_setting }) => {
 
 storage().onChanged.addListener((changes, area) => {
   let video_setting = changes["video_setting"]["newValue"];
-  if (video_setting.enable) {
-    if (
-      video_setting.ignore.some((ignoreItem) => loadMeta().includes(ignoreItem))
-    ) {
+  if (video_setting.enable && video_setting.speed.enabled) {
+    let shouldIgnore = video_setting.ignore.value.some((ignoreItem) =>
+      loadMeta().includes(ignoreItem)
+    );
+    if (video_setting.ignore.enabled && shouldIgnore) {
       return;
     }
 

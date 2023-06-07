@@ -34,13 +34,14 @@ function youtubeChangeViewMode(mode, trial = 0) {
   }
 }
 
-storage().local.get("video_setting", ({ video_setting }) => {
-  if (video_setting.enable) {
+storage().local.get("video_setting", async ({ video_setting }) => {
+  if (video_setting.enable && video_setting.mode.enabled) {
     console.log(
       `${HEADER_YOUTUBE} load video_setting for change view ${JSON.stringify(
         video_setting
       )}`
     );
-    youtubeChangeViewMode(video_setting.mode);
+    await sleep(1000);
+    youtubeChangeViewMode(video_setting.mode.value);
   }
 });
