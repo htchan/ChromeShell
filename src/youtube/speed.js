@@ -46,7 +46,9 @@ async function getTargetSpeedOption(speed) {
 }
 
 async function youtubeChangeSpeed(speed) {
-  let youtubeController = document.querySelector(".ytp-exp-bottom-control-flexbox")
+  let youtubeController = document.querySelector(
+    ".ytp-exp-bottom-control-flexbox"
+  );
   if (!youtubeController) {
     console.log(`${HEADER_YOUTUBE} ${HEADER_SPEED} player container not found`);
     return;
@@ -66,7 +68,7 @@ async function youtubeChangeSpeed(speed) {
   for (let i = 0; i < 10; i++) {
     if (settingButton.getAttribute("aria-expanded") == "true") {
       settingButton.click();
-      break
+      break;
     }
 
     await sleep(UI_INTERACTION_INTERVAL);
@@ -75,11 +77,13 @@ async function youtubeChangeSpeed(speed) {
 
 storage().local.get("video_setting", ({ video_setting }) => {
   if (video_setting.enable && video_setting.speed.enabled) {
-    let shouldIgnore = video_setting.ignore.value.some( (ignoreItem) => loadMeta().includes(ignoreItem) )
+    let shouldIgnore = video_setting.ignore.value.some((ignoreItem) =>
+      loadMeta().search(RegExp(`, ?${ignoreItem.toUpperCase()} ?,`)) >= 0
+    );
     if (video_setting.ignore.enabled && shouldIgnore) {
       return;
     }
-    
+
     console.log(
       `${HEADER_YOUTUBE} ${HEADER_SPEED} [speed] load video_setting for change speed ${JSON.stringify(
         video_setting

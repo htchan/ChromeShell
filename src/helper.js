@@ -36,5 +36,6 @@ function runtime() {
 function loadMeta() {
   return Array.from(document.querySelectorAll("meta"))
     .map((item) => item.content)
-    .join(",");
+    .join(",")
+    .toUpperCase();
 }

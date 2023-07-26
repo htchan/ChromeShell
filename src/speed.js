@@ -5,15 +5,30 @@ async function changePlayerSpeed(player, trial = 0) {
     } else {
       let {
         video_setting: {
-          speed: { value },
+          enable,
+          speed: { enabled: speedEnabled, value: speedValue },
+          ignore: { enabled: ignoreEnabled, value: ignoreValue },
         },
       } = await storage().local.get("video_setting");
-      player.onloadedmetadata = () => changePlayerSpeed(player, value);
+
+      let shouldIgnore =
+        ignoreEnabled &&
+        ignoreValue.some((ignoreItem) =>
+          loadMeta().search(RegExp(`, ?${ignoreItem.toUpperCase()} ?,`)) >= 0
+        );
+
+      if (!enable || !speedEnabled || shouldIgnore) {
+        speedValue = 1;
+      }
+
+      player.onloadedmetadata = () => changePlayerSpeed(player, speedValue);
       for (let i = 0; i < 3; i++) {
-        player.playbackRate = value;
+        player.playbackRate = speedValue;
         await sleep(500);
       }
-      console.log(`${HEADER_GENERIC} ${HEADER_SPEED} update speed to ${value}`);
+      console.log(
+        `${shouldIgnore}${HEADER_GENERIC} ${HEADER_SPEED} update speed to ${speedValue}`
+      );
 
       break;
     }
@@ -31,7 +46,7 @@ function ChangeSpeed() {
 storage().local.get("video_setting", ({ video_setting }) => {
   if (video_setting.enable && video_setting.speed.enabled) {
     let shouldIgnore = video_setting.ignore.value.some((ignoreItem) =>
-      loadMeta().includes(ignoreItem)
+      loadMeta().search(RegExp(`, ?${ignoreItem.toUpperCase()} ?,`)) >= 0
     );
     if (video_setting.ignore.enabled && shouldIgnore) {
       return;
@@ -54,19 +69,10 @@ storage().local.get("video_setting", ({ video_setting }) => {
 
 storage().onChanged.addListener((changes, area) => {
   let video_setting = changes["video_setting"]["newValue"];
-  if (video_setting.enable && video_setting.speed.enabled) {
-    let shouldIgnore = video_setting.ignore.value.some((ignoreItem) =>
-      loadMeta().includes(ignoreItem)
-    );
-    if (video_setting.ignore.enabled && shouldIgnore) {
-      return;
-    }
-
-    console.log(
-      `${HEADER_GENERIC} ${HEADER_SPEED} real time load video_setting for change speed ${JSON.stringify(
-        video_setting
-      )}`
-    );
-    ChangeSpeed();
-  }
+  console.log(
+    `${HEADER_GENERIC} ${HEADER_SPEED} real time load video_setting for change speed ${JSON.stringify(
+      video_setting
+    )}`
+  );
+  ChangeSpeed();
 });

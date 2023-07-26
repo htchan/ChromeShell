@@ -27,11 +27,13 @@ function view_AddVideoBoxClickLister() {
 
 storage().local.get("video_setting", ({ video_setting }) => {
   if (video_setting.enable && video_setting.mode.enabled) {
-    let shouldIgnore = video_setting.ignore.value.some( (ignoreItem) => loadMeta().includes(ignoreItem) )
+    let shouldIgnore = video_setting.ignore.value.some((ignoreItem) =>
+      loadMeta().search(RegExp(`, ?${ignoreItem.toUpperCase()} ?,`)) >= 0
+    );
     if (video_setting.ignore.enabled && shouldIgnore) {
       return;
     }
-    
+
     console.log(
       `${HEADER_YOUTUBE} ${HEADER_MOBILE} ${HEADER_VIEW} load video_setting for change view ${JSON.stringify(
         video_setting
