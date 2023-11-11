@@ -1,5 +1,5 @@
 function skipAds() {
-  skip_ads_button = document.querySelector(".ytp-ad-skip-button.ytp-button");
+  skip_ads_button = document.querySelector(".ytp-ad-skip-button-modern.ytp-button");
   skip_ads_button?.click();
   close_ads_buttons = Array.from(
     document.querySelectorAll(".ytp-ad-overlay-close-button")
