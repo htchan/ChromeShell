@@ -67,28 +67,29 @@ storage().onChanged.addListener((changes, namespace) => {
 });
 
 const SPEED_STEP = 0.25;
-
-chrome.commands.onCommand.addListener((command) => {
-  if (setting == null) {
-    return;
-  }
-  switch (command.toUpperCase()) {
-    case "FASTER":
-      setting.speed.value = (Number(setting.speed.value) + SPEED_STEP).toString();
-
-      storage().local.set({
-        video_setting: setting,
-      });
-      break;
-    case "SLOWER":
-      if (setting.speed.value > SPEED_STEP) {
-        setting.speed.value = (Number(setting.speed.value) - SPEED_STEP).toString();
+if (detectBrowser() == "chrome") {
+  chrome.commands.onCommand.addListener((command) => {
+    if (setting == null) {
+      return;
+    }
+    switch (command.toUpperCase()) {
+      case "FASTER":
+        setting.speed.value = (Number(setting.speed.value) + SPEED_STEP).toString();
 
         storage().local.set({
           video_setting: setting,
         });
-      }
-      break;
-    default:
-  }
-});
+        break;
+      case "SLOWER":
+        if (setting.speed.value > SPEED_STEP) {
+          setting.speed.value = (Number(setting.speed.value) - SPEED_STEP).toString();
+
+          storage().local.set({
+            video_setting: setting,
+          });
+        }
+        break;
+      default:
+    }
+  });
+}

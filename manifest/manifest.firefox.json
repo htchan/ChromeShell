@@ -1,6 +1,6 @@
 {
   "name": "Player Helper",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
   "manifest_version": 2,
   "permissions": ["storage", "tabs"],

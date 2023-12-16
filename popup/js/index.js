@@ -3,6 +3,12 @@ let panelEnabledButton = document.getElementById("panel-enable");
 
 let speedEnabledButton = document.getElementById("speed-enable");
 let speedInput = document.getElementById("speed");
+let speedOption05 = document.getElementById("speed_option_05");
+let speedOption1 = document.getElementById("speed_option_1");
+let speedOption15 = document.getElementById("speed_option_15");
+let speedOption2 = document.getElementById("speed_option_2");
+let speedOption25 = document.getElementById("speed_option_25");
+let speedOption3 = document.getElementById("speed_option_3");
 
 let modeEnabledButton = document.getElementById("mode-enable");
 let modeDropdown = document.getElementById("mode");
@@ -88,6 +94,24 @@ speedInput.onchange = (event) => {
   setting.speed.value = speedInput.value;
   updateSetting();
 };
+
+let speedOptions = [
+  speedOption05,
+  speedOption1,
+  speedOption15,
+  speedOption2,
+  speedOption25,
+  speedOption3
+]
+
+speedOptions.forEach(option => {
+  option.onclick = (event) => {
+    setting.speed.value = option.value;
+    console.log(option.value);
+    console.log(setting.speed.value);
+    updateSetting();
+  }
+})
 
 modeEnabledButton.onclick = (event) => {
   setting.mode = {
