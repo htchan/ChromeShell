@@ -1,5 +1,4 @@
 let enableButton = document.getElementById("enable");
-let panelEnabledButton = document.getElementById("panel-enable");
 
 let speedEnabledButton = document.getElementById("speed-enable");
 let speedInput = document.getElementById("speed");
@@ -16,16 +15,20 @@ let modeDropdown = document.getElementById("mode");
 let ignoreEnabledButton = document.getElementById("ignore-enable");
 let ignoreDropdown = document.getElementById("ignore");
 
+let panelEnabledButton = document.getElementById("panel-enable");
+let panelReapplySettingButton = document.getElementById("panel-reapply-setting");
+
 var setting = {};
 
 function applySetting(video_setting) {
   if (video_setting == null) {
     setting = {
       enable: false,
-      panel_enabled: false,
       speed: { enabled: false, value: 1 },
       mode: { enabled: false, value: "default" },
       ignore: { enabled: false, value: [] },
+      panel_enabled: false,
+      panel_reapply_setting: false,
     };
 
     storage().local.set({
@@ -33,6 +36,8 @@ function applySetting(video_setting) {
     });
   } else {
     setting = video_setting;
+    setting.panelEnabledButton ||= false;
+    setting.panelReapplySettingButton ||= false;
   }
 
   enableButton.className = setting.enable ? "enabled" : "disabled";
@@ -61,6 +66,7 @@ function applySetting(video_setting) {
   panelEnabledButton.innerText = `Panel ${
     setting.panel_enabled ? "En" : "Dis"
   }abled`;
+  panelReapplySettingButton.className = setting.panel_reapply_setting ? "enabled" : "disabled";
 }
 
 function updateSetting() {
@@ -148,6 +154,11 @@ panelEnabledButton.onclick = (event) => {
   setting.panel_enabled = !setting.panel_enabled;
   updateSetting();
 };
+
+panelReapplySettingButton.onclick = (event) => {
+  setting.panel_reapply_setting = !setting.panel_reapply_setting;
+  updateSetting();
+}
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (changes.video_setting != null) {
