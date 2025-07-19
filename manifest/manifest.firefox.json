@@ -1,6 +1,6 @@
 {
   "name": "Player Helper",
-  "version": "2.7.2",
+  "version": "2.7.3",
   "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
   "manifest_version": 3,
   "permissions": ["storage", "tabs"],
@@ -49,10 +49,10 @@
   ],
   "browser_specific_settings": {
     "gecko": {
-      "id": "player-helper@htchan"
+      "id": "{195207f4-39c6-47ce-92e4-73a199e2f819}"
     },
     "gecko_android": {
-      "id": "player-helper@htchan"
+      "id": "{195207f4-39c6-47ce-92e4-73a199e2f819}"
     }
   }
 }
