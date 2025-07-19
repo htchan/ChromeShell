@@ -36,8 +36,9 @@ function runtime() {
 // default setting
 var setting = null;
 
+// Initialize settings when extension is installed or updated
 runtime().onInstalled.addListener(() => {
-  storage().local.get("video_setting", (result) => {
+  storage().local.get("video_setting").then((result) => {
     if (!result.video_setting) {
       setting = {
         enable: false,
@@ -52,14 +53,19 @@ runtime().onInstalled.addListener(() => {
     } else {
       setting = result.video_setting;
     }
+  }).catch(error => {
+    console.error("Error initializing settings:", error);
   });
 });
 
-storage().local.get(
-  "video_setting",
-  ({ video_setting }) => (setting = video_setting)
-);
+// Load settings on startup
+storage().local.get("video_setting").then(({ video_setting }) => {
+  setting = video_setting;
+}).catch(error => {
+  console.error("Error loading settings:", error);
+});
 
+// Listen for changes to settings
 storage().onChanged.addListener((changes, namespace) => {
   if (changes?.video_setting != null) {
     setting = changes.video_setting.newValue;

@@ -1,16 +1,17 @@
 {
   "name": "Player Helper",
-  "version": "2.7.1",
+  "version": "2.7.2",
   "description": "Automate steps when website load eg. skip ads in youtube, set speed ...",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "permissions": ["storage", "tabs"],
   "icons": {
     "32": "resource/icon.png"
   },
   "background": {
-    "scripts": ["src/background.js"]
+    "scripts": ["src/background.js"],
+    "type": "module"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "popup/index.html",
     "default_title": "Video Player Helper"
   },
@@ -45,5 +46,13 @@
       "js": ["src/bilibili/view.js"],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "player-helper@htchan"
+    },
+    "gecko_android": {
+      "id": "player-helper@htchan"
+    }
+  }
 }
