@@ -5,10 +5,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint src/ popup/js/",
-    "lint:fix": "eslint src/ popup/js/ --fix",
-    "build:chrome": "cp manifest/manifest.chrome.json manifest.json",
-    "build:firefox": "cp manifest/manifest.firefox.json manifest.json",
-    "build:web-ext": "web-ext build"
+    "lint:fix": "eslint src/ popup/js/ --fix"
   },
   "devDependencies": {
     "eslint": "^9.0.0",
