@@ -6,9 +6,8 @@
   "scripts": {
     "lint": "eslint src/ popup/js/",
     "lint:fix": "eslint src/ popup/js/ --fix",
-    "build:chrome": "cp manifest/manifest.chrome.json manifest.json",
-    "build:firefox": "cp manifest/manifest.firefox.json manifest.json",
-    "build:web-ext": "web-ext build"
+    "build:chrome": "make chrome_version build-web-ext",
+    "build:firefox": "make firefox_version build-web-ext"
   },
   "devDependencies": {
     "eslint": "^9.0.0",
