@@ -44,6 +44,7 @@ function ChangeSpeed() {
 }
 
 storage().local.get("video_setting", ({ video_setting }) => {
+  if (!video_setting) return;
   if (video_setting.enable && video_setting.speed.enabled) {
     let shouldIgnore = video_setting.ignore.value.some((ignoreItem) =>
       loadMeta().search(RegExp(`, ?${ignoreItem.toUpperCase()} ?,`)) >= 0
@@ -68,7 +69,9 @@ storage().local.get("video_setting", ({ video_setting }) => {
 });
 
 storage().onChanged.addListener((changes, area) => {
+  if (!changes["video_setting"]) return;
   let video_setting = changes["video_setting"]["newValue"];
+  if (!video_setting) return;
   console.log(
     `${HEADER_GENERIC} ${HEADER_SPEED} real time load video_setting for change speed ${JSON.stringify(
       video_setting

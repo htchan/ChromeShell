@@ -35,6 +35,7 @@ function youtubeChangeViewMode(mode, trial = 0) {
 }
 
 storage().local.get("video_setting", async ({ video_setting }) => {
+  if (!video_setting) return;
   if (video_setting.enable && video_setting.mode.enabled) {
     console.log(
       `${HEADER_YOUTUBE} load video_setting for change view ${JSON.stringify(

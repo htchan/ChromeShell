@@ -71,6 +71,7 @@ async function addControlPanel() {
 }
 
 storage().local.get("video_setting", async ({ video_setting }) => {
+  if (!video_setting) return;
   console.log(video_setting);
   panel_original_video_setting = video_setting;
   await addControlPanel();
@@ -84,6 +85,7 @@ storage().local.get("video_setting", async ({ video_setting }) => {
 });
 
 storage().onChanged.addListener((changes, area) => {
+  if (!changes["video_setting"]) return;
   let video_setting = changes["video_setting"]["newValue"];
   console.log(`setting updated ${video_setting}`);
   if (video_setting != null) {
