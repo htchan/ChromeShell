@@ -27,7 +27,7 @@ async function changePlayerSpeed(player, trial = 0) {
         await sleep(500);
       }
       console.log(
-        `${shouldIgnore}${HEADER_GENERIC} ${HEADER_SPEED} update speed to ${speedValue}`
+        `${HEADER_GENERIC} ${HEADER_SPEED} update speed to ${speedValue} (ignored: ${shouldIgnore})`
       );
 
       break;

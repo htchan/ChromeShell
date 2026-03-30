@@ -8,8 +8,7 @@ const displayStyle = {
   top: "0",
   left: "0px",
   "z-index": "9999",
-  transform: "translateY(0)",
-  transform: "translateX(0)",
+  transform: "translateX(0) translateY(0)",
   "font-size": "5vw",
   "text-align": "center",
   "vertical-align": "middle",
@@ -33,8 +32,6 @@ const applyPanelStyles = (element, panelEnabled, panelReapplySetting) => {
   } else {
     styles["pointer-events"] = "none";
   }
-
-  console.log(styles)
 
   Object.entries(styles).forEach(([prop, val]) => {
     const [value, pri = ""] = val.split("!");
@@ -60,7 +57,6 @@ async function addControlPanel() {
   if (panel_reapply_setting) {
     panel.onclick = () => {
       if (panel_original_video_setting != null) {
-        storage().local.set({ video_setting: null });
         storage().local.set({ video_setting: panel_original_video_setting });
       }
     };

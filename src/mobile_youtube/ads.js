@@ -6,7 +6,7 @@ async function skipAds() {
     video.parentElement.parentElement.classList.contains("ad-showing");
   if (isAdsPlaying) {
     // set playback speed to 10
-    for (i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) {
       await sleep(100)
       video.playbackRate = 10;
       console.log("skip ads: speed up!!!");
