@@ -71,28 +71,30 @@ npm install
 |---------|-------------|
 | `npm run lint` | Run ESLint on `src/` and `popup/js/` to check for errors |
 | `npm run lint:fix` | Run ESLint and auto-fix fixable issues |
-| `npm run build:chrome` | Copy `manifest/manifest.chrome.json` → `manifest.json` for Chrome |
-| `npm run build:firefox` | Copy `manifest/manifest.firefox.json` → `manifest.json` for Firefox |
-| `npm run build:web-ext` | Package the extension into a distributable `.zip` via `web-ext build` |
 
-### Loading for Development
+### Build & Load
 
 **Chrome:**
 ```bash
-npm run build:chrome
+make chrome_version
 # Then load unpacked at chrome://extensions/
 ```
 
 **Firefox:**
 ```bash
-npm run build:firefox
+make firefox_version
 # Then load temporary add-on at about:debugging#/runtime/this-firefox
 ```
 
 **Firefox Android:**
 ```bash
-npm run build:firefox
+make firefox_version
 DEVICE_ID=<your-device> make run-web-ext
+```
+
+**Package for distribution:**
+```bash
+make build-web-ext
 ```
 
 ## Project Structure
