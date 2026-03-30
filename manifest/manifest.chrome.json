@@ -29,6 +29,14 @@
       "run_at": "document_end"
     },
     {
+      "matches": ["https://m.youtube.com/*"],
+      "js": [
+        "src/mobile_youtube/view.js",
+        "src/mobile_youtube/ads.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
       "matches": ["https://www.bilibili.com/video/*"],
       "js": ["src/bilibili/view.js"],
       "run_at": "document_end"
