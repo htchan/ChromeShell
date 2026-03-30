@@ -16,6 +16,7 @@ function youtubeSkipAds() {
 }
 
 storage().local.get("video_setting", ({ video_setting }) => {
+  if (!video_setting) return;
   if (video_setting.enable) {
     skipAds();
     youtubeSkipAds();
@@ -23,7 +24,9 @@ storage().local.get("video_setting", ({ video_setting }) => {
 });
 
 storage().onChanged.addListener((changes, area) => {
+  if (!changes["video_setting"]) return;
   let video_setting = changes["video_setting"]["newValue"];
+  if (!video_setting) return;
   if (video_setting.enable) {
     skipAds();
     youtubeSkipAds();

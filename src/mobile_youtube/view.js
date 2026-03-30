@@ -26,6 +26,7 @@ function view_AddVideoBoxClickLister() {
 }
 
 storage().local.get("video_setting", ({ video_setting }) => {
+  if (!video_setting) return;
   if (video_setting.enable && video_setting.mode.enabled) {
     let shouldIgnore = video_setting.ignore.value.some((ignoreItem) =>
       loadMeta().search(RegExp(`, ?${ignoreItem.toUpperCase()} ?,`)) >= 0
