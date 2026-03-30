@@ -36,8 +36,8 @@ function applySetting(video_setting) {
     });
   } else {
     setting = video_setting;
-    setting.panelEnabledButton ||= false;
-    setting.panelReapplySettingButton ||= false;
+    setting.panel_enabled ||= false;
+    setting.panel_reapply_setting ||= false;
   }
 
   enableButton.className = setting.enable ? "enabled" : "disabled";
@@ -70,12 +70,12 @@ function applySetting(video_setting) {
 }
 
 function updateSetting() {
-  chrome.storage.local.set({
+  storage().local.set({
     video_setting: setting,
   });
 }
 
-chrome.storage.local.get("video_setting", ({ video_setting }) => {
+storage().local.get("video_setting", ({ video_setting }) => {
   applySetting(video_setting);
 });
 
@@ -85,13 +85,11 @@ enableButton.onclick = (event) => {
 };
 
 speedEnabledButton.onclick = (event) => {
-  console.log(setting)
   setting.speed = {
     enabled: !setting.speed.enabled,
     value: setting.speed.value || setting.speed,
   };
 
-  console.log(setting)
 
   updateSetting();
 };
@@ -113,8 +111,6 @@ let speedOptions = [
 speedOptions.forEach(option => {
   option.onclick = (event) => {
     setting.speed.value = option.value;
-    console.log(option.value);
-    console.log(setting.speed.value);
     updateSetting();
   }
 })
@@ -160,7 +156,7 @@ panelReapplySettingButton.onclick = (event) => {
   updateSetting();
 }
 
-chrome.storage.onChanged.addListener((changes, namespace) => {
+storage().onChanged.addListener((changes, namespace) => {
   if (changes.video_setting != null) {
     applySetting(changes.video_setting.newValue);
   }
