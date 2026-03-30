@@ -1,31 +1,124 @@
-# Chrome Shell
+# Player Helper
 
-## description
-the purpose of this repo is increase the accessability of chrome console to html element by simulating user interact with the html elements
+A browser extension that automates video player interactions — speed control, ad skipping, and view mode switching for YouTube and Bilibili.
 
-this is just an initial idea. the ultimate goal is all websites set up the variable to let people access it by browser console.
+## Features
 
-## set up
+- **Speed control** — set a default playback speed for all video players, with keyboard shortcuts (`Ctrl+Shift+Up/Down`) to adjust on the fly
+- **Ad skipping** — automatically skips YouTube ads (desktop and mobile)
+- **View mode** — auto-switch to theater or fullscreen mode on YouTube and Bilibili
+- **Ignore list** — skip speed changes for specific content types (e.g. music videos)
+- **In-page panel** — floating speed indicator overlay with optional click-to-reapply
 
-currently only available for chrome
+## Supported Sites
 
-### chrome
+| Site | Speed | Ads | View Mode |
+|------|-------|-----|-----------|
+| YouTube (desktop) | ✅ | ✅ | ✅ |
+| YouTube (mobile) | ✅ | ✅ | ✅ |
+| Bilibili | ✅ | — | ✅ |
+| Any site with `<video>` | ✅ | — | — |
 
-1. import snippet
-    1. open developer tools by `f12` or `ctrl`+`shift`+`i`
-    2. use `ctrl`+`shift`+`p` to open the command prompt and input `create new snippet`
-    3. copy the `js` file in src in repo to the snippet
-    4. save it and open command by `ctrl`+`shift`+`o` and use `!filename.js` to run the snippet
+## Installation
 
+### Chrome
 
-## current process
-- [video](docs/video.md):
-    - function
-        - speedUp
-        - changeMode
-        - skipAds
-        - play
-        - pause
-        - next
-        - previous
-        - jumpTo
+1. Clone or download this repo
+2. Run `make chrome_version` (or copy `manifest/manifest.chrome.json` to `manifest.json`)
+3. Open `chrome://extensions/`
+4. Enable **Developer mode**
+5. Click **Load unpacked** and select the repo folder
+
+### Firefox
+
+1. Clone or download this repo
+2. Run `make firefox_version` (or copy `manifest/manifest.firefox.json` to `manifest.json`)
+3. Open `about:debugging#/runtime/this-firefox`
+4. Click **Load Temporary Add-on** and select `manifest.json`
+
+### Firefox Android
+
+1. Set up `adb` and connect your device
+2. Run `make firefox_version && DEVICE_ID=<your-device> make run-web-ext`
+
+## Usage
+
+Click the extension icon to open the popup panel:
+
+- **Extension Enable/Disable** — master toggle
+- **Speed** — enable/disable + set value (0.25–8x) or use preset buttons
+- **Mode** — Normal / Theater / Full
+- **Ignore** — select content types to skip speed changes for (e.g. Music, 音乐)
+- **Panel** — show/hide the floating speed overlay; optionally click it to re-apply settings
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+Shift+Up` | Speed up (+0.25x) |
+| `Ctrl+Shift+Down` | Slow down (-0.25x) |
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+```
+
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run lint` | Run ESLint on `src/` and `popup/js/` to check for errors |
+| `npm run lint:fix` | Run ESLint and auto-fix fixable issues |
+| `npm run build:chrome` | Copy `manifest/manifest.chrome.json` → `manifest.json` for Chrome |
+| `npm run build:firefox` | Copy `manifest/manifest.firefox.json` → `manifest.json` for Firefox |
+| `npm run build:web-ext` | Package the extension into a distributable `.zip` via `web-ext build` |
+
+### Loading for Development
+
+**Chrome:**
+```bash
+npm run build:chrome
+# Then load unpacked at chrome://extensions/
+```
+
+**Firefox:**
+```bash
+npm run build:firefox
+# Then load temporary add-on at about:debugging#/runtime/this-firefox
+```
+
+**Firefox Android:**
+```bash
+npm run build:firefox
+DEVICE_ID=<your-device> make run-web-ext
+```
+
+## Project Structure
+
+```
+src/
+├── helper.js              # Shared utilities (sleep, browser detection, storage)
+├── const.js               # Constants and log headers
+├── videoEventHandler.js   # Custom event listener registry
+├── speed.js               # Generic video speed control
+├── in_app_panel.js        # Floating speed overlay panel
+├── background.js          # Service worker (settings init, keyboard shortcuts)
+├── youtube/
+│   ├── ads.js             # YouTube ad skipper
+│   ├── view.js            # YouTube view mode switcher
+│   └── speed.js           # YouTube-specific speed (via settings menu)
+├── mobile_youtube/
+│   ├── ads.js             # Mobile YouTube ad skipper
+│   └── view.js            # Mobile YouTube fullscreen
+└── bilibili/
+    └── view.js            # Bilibili view mode switcher
+manifest/
+├── manifest.chrome.json   # Chrome MV3 manifest
+└── manifest.firefox.json  # Firefox MV3 manifest
+popup/
+├── index.html             # Extension popup UI
+├── js/index.js            # Popup logic
+└── css/switch.css         # Popup styles
+```
