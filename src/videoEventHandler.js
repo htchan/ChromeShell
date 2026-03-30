@@ -11,8 +11,8 @@ function addEventListener(element, event, callback, options = {}) {
 
   // store the wrapper so it can be removed later
   let wrapper = () => {
-    elementListeners[event].forEach((item) => {
-      item(element);
+    elementListeners[event].forEach((registeredCallback) => {
+      registeredCallback(element);
     });
   };
 
@@ -29,7 +29,7 @@ function removeEventListener(element, event, callback) {
   if (!element) return;
   let elementListeners = listeners[element] || {};
   elementListeners[event] = (elementListeners[event] || []).filter(
-    (item) => item != callback
+    (registeredCallback) => registeredCallback != callback
   );
 
   // remove the old wrapper and attach a new one with the updated list
@@ -40,8 +40,8 @@ function removeEventListener(element, event, callback) {
 
   if (elementListeners[event].length > 0) {
     let wrapper = () => {
-      elementListeners[event].forEach((item) => {
-        item(element);
+      elementListeners[event].forEach((registeredCallback) => {
+        registeredCallback(element);
       });
     };
     elementWrappers[event] = wrapper;
