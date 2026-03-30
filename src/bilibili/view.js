@@ -12,7 +12,7 @@ function biliChangeView(mode, trial = 0) {
   let player = document.getElementsByTagName("video")[0];
   if (player.readyState < 1) {
     if (trial < 10) {
-      setTimeout(() => _biliChangeView(mode, trial + 1), 1000);
+      setTimeout(() => biliChangeView(mode, trial + 1), 1000);
     }
   }
 
@@ -30,7 +30,7 @@ function biliChangeView(mode, trial = 0) {
         "bpx-player-ctrl-btn bpx-player-ctrl-web"
       )[0];
       if (!theaterModeButton && trial < 10) {
-        setTimeout(() => _biliChangeView(mode, trial + 1), 1000);
+        setTimeout(() => biliChangeView(mode, trial + 1), 1000);
         return;
       }
       if (!isTheaterMode) {
