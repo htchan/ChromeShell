@@ -1,5 +1,8 @@
-// import shared helpers (sleep, detectBrowser, storage, runtime)
-importScripts("helper.js");
+// Chrome service worker: import shared helpers via importScripts
+// Firefox: helper.js is loaded via manifest background.scripts array
+if (typeof importScripts === "function") {
+  importScripts("src/helper.js");
+}
 
 // default setting
 var setting = null;
