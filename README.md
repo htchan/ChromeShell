@@ -63,17 +63,36 @@ Click the extension icon to open the popup panel:
 ```bash
 # Install dependencies
 npm install
+```
 
-# Lint
-npm run lint
-npm run lint:fix
+### Available Scripts
 
-# Build for target browser
+| Command | Description |
+|---------|-------------|
+| `npm run lint` | Run ESLint on `src/` and `popup/js/` to check for errors |
+| `npm run lint:fix` | Run ESLint and auto-fix fixable issues |
+| `npm run build:chrome` | Copy `manifest/manifest.chrome.json` → `manifest.json` for Chrome |
+| `npm run build:firefox` | Copy `manifest/manifest.firefox.json` → `manifest.json` for Firefox |
+| `npm run build:web-ext` | Package the extension into a distributable `.zip` via `web-ext build` |
+
+### Loading for Development
+
+**Chrome:**
+```bash
 npm run build:chrome
-npm run build:firefox
+# Then load unpacked at chrome://extensions/
+```
 
-# Package for distribution
-npm run build:web-ext
+**Firefox:**
+```bash
+npm run build:firefox
+# Then load temporary add-on at about:debugging#/runtime/this-firefox
+```
+
+**Firefox Android:**
+```bash
+npm run build:firefox
+DEVICE_ID=<your-device> make run-web-ext
 ```
 
 ## Project Structure
