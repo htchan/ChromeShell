@@ -90,6 +90,6 @@ storage().local.get("video_setting", ({ video_setting }) => {
         video_setting
       )}`
     );
-    youtubeChangeSpeed(2);
+    youtubeChangeSpeed(video_setting.speed.value);
   }
 });
